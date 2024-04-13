@@ -7,10 +7,17 @@
 #include <iostream>
 #include <cmath>
 #include <math.h>
+#include <string>
 #include <algorithm> // for std::min
 #include <vector>
 using namespace std;
 void main_menu();
+bool is_number(const std::string& s)
+{
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
 void after_menu(Image user_img, string user_img_s)
 {
     // Prompt the user to choose whether to save the image with the current name or another name
@@ -75,7 +82,8 @@ void grayScale(Image user_img, string user_img_s)
             user_img.setPixel(i, j, 2, average / 3);
         }
     }
-    after_menu(user_img, user_img_s);
+     
+    after_menu(user_img  , user_img_s);
 }
 
 void Black_and_white(Image user_img, string user_img_s)
@@ -600,6 +608,188 @@ for (int i = 0; i < newimg.width; ++i) {
     }
 after_menu(newimg_herzontal,user_img_s);
 }
+
+void rotate(Image user_img,string user_img_s){
+    while (true)
+    {
+       
+    
+    
+    cout << "Welcome to image rotation : "
+         << "Choose 1 to flip image 270 degrees: "
+         << "Choose 2 to flip image 90 degrees : "
+         << "Choose 3 to flip image 180 degrees : ";
+    string choice;
+    cin >> choice;
+
+    //rotate image by 270 degrees
+    if(choice == "1"){
+        //creating blank image with the new dimensions
+        Image result(user_img.height,user_img.width);
+
+        for(int i = 0; i < user_img.width; ++i){
+            for(int j = 0; j < user_img.height; j++){
+                for(int k = 0; k < 3; k++){
+                    //Filling the blank image with pixels
+                    result(j,user_img.width - i - 1,k) = user_img( i, j,k);
+                }
+            }
+        }
+        after_menu(result,user_img_s);
+
+    }
+        //rotate image by 90 degrees
+    else if(choice == "2"){
+        //creating a blank image with new dimensions
+        Image result(user_img.height,user_img.width);
+
+        for(int i = 0; i < user_img.width; ++i){
+            for(int j = 0; j < user_img.height; j++){
+                for(int k = 0; k < 3; k++){
+                    //filling the blank image with pixels
+                    result(user_img.height - j - 1,i,k) = user_img( i, j,k);
+                }
+            }
+        }
+        after_menu(result,user_img_s);
+    }
+        //rotate image by 180 degrees
+    else if(choice == "3"){
+        //creating blank image to avoid segmentation error
+        Image result(user_img.width,user_img.height);
+
+        for(int i = 0; i < user_img.width; ++i){
+            for(int j = 0; j < user_img.height; j++){
+                for(int k = 0; k < 3; k++){
+                    //filling each pixel
+                    result(i,j,k) = user_img(user_img.width - 1 - i, user_img.height - 1 - j,k);
+                }
+            }
+        }
+        after_menu(result,user_img_s);
+    }
+    else cout << "Invalid choice Please try again :";
+}
+
+}
+
+void crop_images(Image user_img,string user_img_s, int x, int y, int width, int height){
+    //Initializing the dimensions of the cropped image
+    Image cropped(width , height);
+    //iterating of the pixels of the copped image
+    for(int i = 0; i < width; ++i){
+        for(int j = 0; j < height; j++){
+            for(int k = 0; k < 3; k++){
+                //adding the value of x (the starting pixel to from the old photo to i)
+                cropped(i,j,k) = user_img(x + i, y + j,k);
+            }
+        }
+    }
+    after_menu(cropped,user_img_s);
+}
+
+void frame(Image user_img,string user_img_s){
+    int width =  50;
+    int height =  50;
+    Image image_new( user_img.width + 2 * width,  user_img.height + 2 * height);
+
+    for(int i = 0; i < user_img.width; i++){
+        for(int j = 0; j < user_img.height; j++){
+            for(int k = 0; k < 3; k++){
+                image_new(i + width ,j + height ,k) = user_img(i,j,k);
+            }
+        }
+    }
+    for (int i = 0; i < image_new.width; ++i) {
+        for (int j = 0; j < height; ++j) {
+            image_new(i, j, 0) = 0;
+            image_new(i, j, 1) = 0;
+            image_new(i, j, 2) = 0;
+
+            image_new(i, image_new.height - 1 - j, 0) = 0;
+            image_new(i, image_new.height - 1 - j, 1) = 0;
+            image_new(i, image_new.height - 1 - j, 2) = 0;
+        }
+    }
+
+    // Draw frame on the left and right sides
+    for (int i = 0; i < width; ++i) {
+        for (int j = 0; j < image_new.height; ++j) {
+            image_new(i, j, 0) = 0;
+            image_new(i, j, 1) = 0;
+            image_new(i, j, 2) = 0;
+
+            image_new(image_new.width - 1 - i, j, 0) = 0;
+            image_new(image_new.width - 1 - i, j, 1) = 0;
+            image_new(image_new.width - 1 - i, j, 2) = 0;
+        }
+    }
+
+    after_menu(image_new,user_img_s);
+}
+
+void resize(Image user_img,string user_img_s,int width, int height){
+    //Making new image with the new dimensions
+    Image result(width,height);
+
+    float r1 = (1.0 * user_img.width) / width; //Converting width to float the dividing to get a ratio
+    float r2 = (1.0 * user_img.height) / height; //Converting height to float
+    //Iterating over the new dimensions of the image
+    for(int i = 0; i < width; ++i){
+        for(int j = 0; j < height; j++){
+            for(int k = 0; k < 3; k++){
+                //Calculating the value of each pixel of the new image
+                int new_width = round(i*r1);
+                int new_height = round(j*r2);
+                //equating the new image with the old image index new width and height
+                result(i,j,k) = user_img(new_width,new_height,k);
+            }
+        }
+    }
+   after_menu(result,user_img_s);
+}
+
+void blur(Image user_img,string user_img_s, int blur) {
+    // Check if blur is odd
+    Image result(user_img.width, user_img.height);
+    cout << "this filter take a time so please wait\n";
+    if (blur % 2 == 0) {
+        cout << "Blur size must be odd. Incrementing blur by 1." << endl;
+        blur += 1;
+    }
+    // Adjust kernel size based on blur
+    int kernel_size = blur;
+
+    // Middle index of the kernel
+    int middle = kernel_size / 2;
+
+    // Loop through the image pixels
+    for (int i = 0; i < user_img.width; ++i) {
+        for (int j = 0; j < user_img.height; ++j) {
+            vector<float> acc = {0, 0, 0};
+            //looping from from left of the pixel to its right
+            for (int a = -middle; a <= middle; ++a) {
+                for (int b = -middle; b <= middle; ++b) {
+                    int in = i + a; //Index of the pixel
+                    int jn = j + b; //Index of the pixel
+                    //makeing sure not to exced the image bounds and leaving the edges
+                    if (in >= 0 && in < user_img.width && jn >= 0 && jn < user_img.height) {
+                        // Apply kernel to the image pixel
+                        for (int c = 0; c < 3; ++c) {
+                            acc[c] += user_img(in, jn, c);
+                        }
+                    }
+                }
+            }
+            // Update the result image
+            for (int c = 0; c < 3; ++c) {
+                result(i, j, c) = acc[c] / (kernel_size * kernel_size);
+            }
+        }
+    }
+    after_menu(result,user_img_s);
+}
+
 void main_menu()
 {
     while (true)
@@ -619,8 +809,13 @@ void main_menu()
             cout << "[3] Invert Image\n";
             cout << "[4] Merge Images\n";
             cout << "[5] Flip Image\n";
+            cout << "[6] rotate Image\n";
             cout << "[7] Darken and lighten Image\n";
+            cout << "[8] crop image\n";
+            cout << "[9] frame image\n";
             cout << "[10] Detect edges\n";
+            cout << "[11] resizing image\n";
+            cout << "[12] bluring image\n";
             cout << "[13] the land of wano\n";
             cout << "[14] oil painting\n";
             cout << "[16] luffy look purple\n";
@@ -646,12 +841,70 @@ void main_menu()
             case 5:
                 Flip_Image(user_img, user_img_s);
                 break;
+            case 6:
+                rotate(user_img,user_img_s);
+                break;
             case 7:
                 Darken_and_lighten_Image(user_img, user_img_s);
+                break;
+            case 8:
+                while (true)
+                {
+                    string x,y,width,height;
+                    cout << "please enter x (x-axis starting point)\n";
+                    cin >> x;
+                    cout << "please enter y (y-axis starting point)\n";
+                    cin >> y;
+                    cout << "please enter the width you want\n";
+                    cin >> width;
+                    cout << "please enter the height you want\n";
+                    cin >> height;
+                    if (is_number(x) && is_number(y) && is_number(width) && is_number(height)){
+                    crop_images(user_img,user_img_s,stoi(x),stoi(y),stoi(width),stoi(height));
+                    }
+                    else{
+                        cout << "wrong data you must enter integer numbers\n";
+                        continue;
+                    }
+                }
+                break;
+            case 9:
+                frame(user_img,user_img_s);
                 break;
             case 10:
                 detect_edges(user_img,user_img_s);
                 break;
+            case 11:
+                int width,height;
+                while(true){
+                cout << "please enter the width you want\n";
+                cin >> width;
+                cout << "please enter the height you want\n";
+                cin >> height;
+                try{
+                resize(user_img,user_img_s,width,height);
+                }
+                catch(...){
+                    throw(width);
+                    throw(height);
+                    continue;
+                }
+                }
+            case 12:
+                int bluring;
+                while(true){
+                cout << "please enter the bluring degree you want\n";
+                cin >> bluring;
+                try{
+                    blur(user_img,user_img_s,bluring);
+                }
+                catch(...){
+                    throw(bluring);
+                    continue;
+                }
+                }
+
+
             case 13:
                 the_land_of_wano(user_img,user_img_s);
                 break;
