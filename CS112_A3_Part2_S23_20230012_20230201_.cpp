@@ -11,6 +11,9 @@
 #include <algorithm> // for std::min
 #include <vector>
 using namespace std;
+void televsion( string user_img_s);
+void x_ray( string user_img_s);
+void saturation(string user_img_s);
 void main_menu();
 bool is_number(const std::string& s)
 {
@@ -384,7 +387,7 @@ void Darken_and_lighten_Image(Image user_img, string user_img_s)
     }
     after_menu(user_img, user_img_s);
 }
-
+void televsion( string user_img_s);
 void detect_edges(Image user_img,string user_img_s){
 Image img2 (user_img.width,user_img.height);
     for (int i = 0; i < user_img.width - 2; i++)
@@ -867,8 +870,11 @@ void main_menu()
             cout << "[12] bluring image\n";
             cout << "[13] the land of wano\n";
             cout << "[14] oil painting\n";
+            cout << "[15] televsion screen\n";
             cout << "[16] luffy look purple\n";
+            cout << "[17] x-ray\n";
             cout << "[18] skew image\n";
+            cout << "[19] saturation change \n";
             cout << "[20] adding two images together\n";
             // Add code here for applying selected filter
             int choice;
@@ -960,12 +966,21 @@ void main_menu()
             case 14:
                 oil_painting(user_img,user_img_s);
                 break;
+             case 15:
+                 televsion(  user_img_s);
+                break;
             case 16:
                 luffy_look_purple(user_img,user_img_s);
+                break;
+            case 17:
+                x_ray(user_img_s);
                 break;
             case 18:
                 skew_image(user_img,user_img_s);
                 break;
+            case 19:
+               saturation( user_img_s);
+            break;
             case 20:
                 adding_two_picture_together(user_img,user_img_s);
                 break;
@@ -981,8 +996,93 @@ void main_menu()
         }
     }
 }
+void televsion( string user_img_s);
+void x_ray( string user_img_s);
+void saturation(string user_img_s);
 int main()
 {
     main_menu();
     return 0;
+}
+void televsion( string user_img_s)
+{
+    int counter=2;
+     // Open the image
+  Image image(user_img_s);
+  // Create a new image for the adjusted result
+  Image new_image(image.width, image.height);
+
+  
+  // Iterate through each pixel and adjust brightness
+  for (int i = 0; i < image.width; i++) {
+    for (int j = 0; j < image.height; j++) {
+        if(j%counter!=0 ){
+      for (int channel = 0; channel < 3; channel++) {
+        if(channel==0)
+        new_image(i,j,channel)=image(i,j,channel)/2;
+        else if(channel==1)
+        new_image(i,j,channel)=image(i,j,channel)/2;
+        else if(channel==2)
+        new_image(i,j,channel)=image(i,j,channel)/2;
+      }
+      
+        }
+        else{
+        for (int channel = 0; channel < 3; channel++) {
+new_image(i,j,channel)=image(i,j,channel);
+        }
+        }
+        
+      }
+      
+    }
+  after_menu(new_image,user_img_s);
+
+};
+void x_ray( string user_img_s)
+{
+    // Open the image
+  Image image(user_img_s);
+  // Create a new image for the adjusted result
+  Image new_image(image.width, image.height);
+
+  
+  // Iterate through each pixel and adjust brightness
+  for (int i = 0; i < image.width; i++) {
+    for (int j = 0; j < image.height; j++) {
+      for (int channel = 0; channel < 3; channel++) {
+        if(channel==0)
+        new_image(i,j,channel)=255;
+        if(channel==1)
+        new_image(i,j,channel)=-image(i,j,channel)+255;
+        if(channel==2)
+        new_image(i,j,channel)=-image(i,j,channel)+255;
+      }
+    }
+  }
+
+  after_menu(new_image,user_img_s);
+
+};
+void saturation(string user_img_s)
+{
+      // Open the image
+  Image image(user_img_s);
+  // Create a new image for the adjusted result
+  Image new_image(image.width, image.height);
+
+  
+  // Iterate through each pixel and adjust brightness
+  for (int i = 0; i < image.width; i++) {
+    for (int j = 0; j < image.height; j++) {
+      for (int channel = 0; channel < 3; channel++) {
+        if(image(i,j,channel)>=128)
+        new_image(i,j,channel)=255;
+        else 
+        new_image(i,j,channel)=0;
+      }
+      
+        }
+        }
+ after_menu(new_image,user_img_s);
 }
