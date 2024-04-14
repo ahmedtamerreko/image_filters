@@ -688,44 +688,93 @@ void crop_images(Image user_img,string user_img_s, int x, int y, int width, int 
     after_menu(cropped,user_img_s);
 }
 
-void frame(Image user_img,string user_img_s){
-    int width =  50;
-    int height =  50;
-    Image image_new( user_img.width + 2 * width,  user_img.height + 2 * height);
+void frame(Image user_img, string user_img_s) {
+    int width = 50;
+    int height = 50;
 
-    for(int i = 0; i < user_img.width; i++){
-        for(int j = 0; j < user_img.height; j++){
-            for(int k = 0; k < 3; k++){
-                image_new(i + width ,j + height ,k) = user_img(i,j,k);
+    // Initialize color values based on the input string
+    int frame_r = 0, frame_g = 0, frame_b = 0;
+
+    // Set frame color based on user input
+    if (user_img_s == "red") {
+        frame_r = 255;
+        frame_g = 0;
+        frame_b = 0;
+    } else if (user_img_s == "blue") {
+        frame_r = 0;
+        frame_g = 0;
+        frame_b = 255;
+    } else if (user_img_s == "green") {
+        frame_r = 0;
+        frame_g = 255;
+        frame_b = 0;
+    } else if (user_img_s == "cyan") {
+        frame_r = 0;
+        frame_g = 255;
+        frame_b = 255;
+    } else if (user_img_s == "magenta") {
+        frame_r = 255;
+        frame_g = 0;
+        frame_b = 255;
+    } else if (user_img_s == "yellow") {
+        frame_r = 255;
+        frame_g = 255;
+        frame_b = 0;
+    } else if (user_img_s == "light blue") {
+        frame_r = 173;
+        frame_g = 216;
+        frame_b = 230;
+    } else if (user_img_s == "orange") {
+        frame_r = 255;
+        frame_g = 165;
+        frame_b = 0;
+    } else {
+        // Default to black frame if color is not recognized
+        frame_r = 0;
+        frame_g = 0;
+        frame_b = 0;
+    }
+
+    // Create a new image with a frame around the user image
+    Image image_new(user_img.width + 2 * width, user_img.height + 2 * height);
+
+    // Copy the user image into the new image with an offset
+    for (int i = 0; i < user_img.width; i++) {
+        for (int j = 0; j < user_img.height; j++) {
+            for (int k = 0; k < 3; k++) {
+                image_new(i + width, j + height, k) = user_img(i, j, k);
             }
         }
     }
+
+    // Fill top and bottom parts of the frame with the specified color
     for (int i = 0; i < image_new.width; ++i) {
         for (int j = 0; j < height; ++j) {
-            image_new(i, j, 0) = 0;
-            image_new(i, j, 1) = 0;
-            image_new(i, j, 2) = 0;
+            image_new(i, j, 0) = frame_r;
+            image_new(i, j, 1) = frame_g;
+            image_new(i, j, 2) = frame_b;
 
-            image_new(i, image_new.height - 1 - j, 0) = 0;
-            image_new(i, image_new.height - 1 - j, 1) = 0;
-            image_new(i, image_new.height - 1 - j, 2) = 0;
+            image_new(i, image_new.height - 1 - j, 0) = frame_r;
+            image_new(i, image_new.height - 1 - j, 1) = frame_g;
+            image_new(i, image_new.height - 1 - j, 2) = frame_b;
         }
     }
 
-    // Draw frame on the left and right sides
+    // Fill left and right parts of the frame with the specified color
     for (int i = 0; i < width; ++i) {
         for (int j = 0; j < image_new.height; ++j) {
-            image_new(i, j, 0) = 0;
-            image_new(i, j, 1) = 0;
-            image_new(i, j, 2) = 0;
+            image_new(i, j, 0) = frame_r;
+            image_new(i, j, 1) = frame_g;
+            image_new(i, j, 2) = frame_b;
 
-            image_new(image_new.width - 1 - i, j, 0) = 0;
-            image_new(image_new.width - 1 - i, j, 1) = 0;
-            image_new(image_new.width - 1 - i, j, 2) = 0;
+            image_new(image_new.width - 1 - i, j, 0) = frame_r;
+            image_new(image_new.width - 1 - i, j, 1) = frame_g;
+            image_new(image_new.width - 1 - i, j, 2) = frame_b;
         }
     }
 
-    after_menu(image_new,user_img_s);
+    // Pass the new image to the next function
+    after_menu(image_new, user_img_s);
 }
 
 void resize(Image user_img,string user_img_s,int width, int height){
