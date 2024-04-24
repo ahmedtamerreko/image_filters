@@ -1,7 +1,7 @@
 // FileName: CS112_A3_Part1_S23_20230012_20230201_20230345.cpp
 //  Name : Ahmed Tamer Shawky && ID : 20230012 
 //  Name : Abdelrahman Ahmed && ID : 20230201  
-//  Name : Abdullah && ID :  
+//  Name : Abdullah sharrawy
 
 #include "Image_Class.h" // Assuming Image_Class.h defines the Image class
 #include <iostream>
